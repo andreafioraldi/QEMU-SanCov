@@ -1,4 +1,6 @@
 qemu-3*
+qemu-sancov-*
+test-instr
 
 # Prerequisites
 *.d
