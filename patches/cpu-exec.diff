@@ -1,0 +1,23 @@
+diff --git a/accel/tcg/cpu-exec.c b/accel/tcg/cpu-exec.c
+index 870027d4..5abd0152 100644
+--- a/accel/tcg/cpu-exec.c
++++ b/accel/tcg/cpu-exec.c
+@@ -135,6 +135,8 @@ static void init_delay_params(SyncClocks *sc, const CPUState *cpu)
+ }
+ #endif /* CONFIG USER ONLY */
+ 
++#include "../patches/qemu-sancov-cpu-exec-inl.h"
++
+ /* Execute a TB, and fix up the CPU state afterwards if necessary */
+ static inline tcg_target_ulong cpu_tb_exec(CPUState *cpu, TranslationBlock *itb)
+ {
+@@ -143,6 +145,9 @@ static inline tcg_target_ulong cpu_tb_exec(CPUState *cpu, TranslationBlock *itb)
+     TranslationBlock *last_tb;
+     int tb_exit;
+     uint8_t *tb_ptr = itb->tc.ptr;
++    
++    if (itb->pc == sancov_entry_point)
++      sancov_init();
+ 
+     qemu_log_mask_and_addr(CPU_LOG_EXEC, itb->pc,
+                            "Trace %d: %p ["
