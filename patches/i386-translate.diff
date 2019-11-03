@@ -1,5 +1,5 @@
 diff --git a/target/i386/translate.c b/target/i386/translate.c
-index 0dd5fbe4..a23da128 100644
+index 0dd5fbe4..f0d0b599 100644
 --- a/target/i386/translate.c
 +++ b/target/i386/translate.c
 @@ -32,6 +32,8 @@
@@ -31,3 +31,35 @@ index 0dd5fbe4..a23da128 100644
          set_cc_op(s1, CC_OP_SUBB + ot);
          break;
      }
+@@ -5056,6 +5061,7 @@ static target_ulong disas_insn(DisasContext *s, CPUState *cpu)
+                 tcg_gen_ext16u_tl(s->T0, s->T0);
+             }
+             next_eip = s->pc - s->cs_base;
++            sancov_gen_trace_func_enter(s->pc, s->T0);
+             tcg_gen_movi_tl(s->T1, next_eip);
+             gen_push_v(s, s->T1);
+             gen_op_jmp_v(s->T0);
+@@ -6476,6 +6482,7 @@ static target_ulong disas_insn(DisasContext *s, CPUState *cpu)
+         val = x86_ldsw_code(env, s);
+         ot = gen_pop_T0(s);
+         gen_stack_update(s, val + (1 << ot));
++        sancov_gen_trace_func_exit(s->pc, s->T0);
+         /* Note that gen_pop_T0 uses a zero-extending load.  */
+         gen_op_jmp_v(s->T0);
+         gen_bnd_jmp(s);
+@@ -6484,6 +6491,7 @@ static target_ulong disas_insn(DisasContext *s, CPUState *cpu)
+     case 0xc3: /* ret */
+         ot = gen_pop_T0(s);
+         gen_pop_update(s, ot);
++        sancov_gen_trace_func_exit(s->pc, s->T0);
+         /* Note that gen_pop_T0 uses a zero-extending load.  */
+         gen_op_jmp_v(s->T0);
+         gen_bnd_jmp(s);
+@@ -6545,6 +6553,7 @@ static target_ulong disas_insn(DisasContext *s, CPUState *cpu)
+             }
+             next_eip = s->pc - s->cs_base;
+             tval += next_eip;
++            sancov_gen_trace_func_enter_imm(s->pc, tval);
+             if (dflag == MO_16) {
+                 tval &= 0xffff;
+             } else if (!CODE64(s)) {

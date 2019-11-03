@@ -6,6 +6,8 @@ t_void_fn_u8_u8 sancov_cb_trace_cmp1;
 t_void_fn_u16_u16 sancov_cb_trace_cmp2;
 t_void_fn_u32_u32 sancov_cb_trace_cmp4;
 t_void_fn_u64_u64 sancov_cb_trace_cmp8;
+t_void_fn_ptr_ptr sancov_cb_profile_func_enter;
+t_void_fn_ptr_ptr sancov_cb_profile_func_exit;
 
 void *sancov_lib_handle;
 
@@ -22,6 +24,8 @@ void sancov_init(void)
     sancov_cb_trace_cmp2 = (t_void_fn_u16_u16)dlsym(sancov_lib_handle, SANCOV_TRACE_CMP2_NAME);
     sancov_cb_trace_cmp4 = (t_void_fn_u32_u32)dlsym(sancov_lib_handle, SANCOV_TRACE_CMP4_NAME);
     sancov_cb_trace_cmp8 = (t_void_fn_u64_u64)dlsym(sancov_lib_handle, SANCOV_TRACE_CMP8_NAME);
+    sancov_cb_profile_func_enter = (t_void_fn_ptr_ptr)dlsym(sancov_lib_handle, SANCOV_TRACE_FN_ENTER_NAME);
+    sancov_cb_profile_func_exit = (t_void_fn_ptr_ptr)dlsym(sancov_lib_handle, SANCOV_TRACE_FN_EXIT_NAME);
 }
 
 

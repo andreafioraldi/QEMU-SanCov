@@ -3,8 +3,8 @@
 /* Note: we convert the 64 bit args to 32 bit and do some alignment
    and endian swap. Maybe it would be better to do the alignment
    and endian swap in tcg_reg_alloc_call(). */
-void sancov_gen_void_fn_ulong_call(void* fn, target_ulong arg0) {
-
+void sancov_gen_void_fn_ulong_call(void* fn, target_ulong arg0)
+{
   int      real_args, pi;
   unsigned sizemask, flags;
   TCGOp *  op;
@@ -155,14 +155,13 @@ void sancov_gen_void_fn_ulong_call(void* fn, target_ulong arg0) {
   int is_64bit = sizemask & (1 << 2);
   if (!is_64bit) { tcg_temp_free_internal(arg); }
 #endif                                            /* TCG_TARGET_EXTEND_ARGS */
-
 }
 
 /* Note: we convert the 64 bit args to 32 bit and do some alignment
    and endian swap. Maybe it would be better to do the alignment
    and endian swap in tcg_reg_alloc_call(). */
-void sancov_gen_void_fn_TCGv_TCGv_call(void* fn, TCGv_i64 arg0, TCGv_i64 arg1) {
-
+void sancov_gen_void_fn_TCGv_TCGv_call(void* fn, TCGv_i64 arg0, TCGv_i64 arg1)
+{
   int      i, real_args, nb_rets, pi;
   unsigned sizemask, flags;
   TCGOp *  op;
@@ -336,6 +335,20 @@ void sancov_gen_void_fn_TCGv_TCGv_call(void* fn, TCGv_i64 arg0, TCGv_i64 arg1) {
   }
 
 #endif                                            /* TCG_TARGET_EXTEND_ARGS */
+}
 
+void sancov_gen_void_fn_TCGv_ulong_call(void* fn, TCGv_i64 arg0, target_ulong arg1)
+{
+  sancov_gen_void_fn_TCGv_TCGv_call(fn, arg0, tcg_const_tl(arg1));
+}
+
+void sancov_gen_void_fn_ulong_TCGv_call(void* fn, target_ulong arg0, TCGv_i64 arg1)
+{
+  sancov_gen_void_fn_TCGv_TCGv_call(fn, tcg_const_tl(arg0), arg1);
+}
+
+void sancov_gen_void_fn_ulong_ulong_call(void* fn, target_ulong arg0, target_ulong arg1)
+{
+  sancov_gen_void_fn_TCGv_TCGv_call(fn, tcg_const_tl(arg0), tcg_const_tl(arg1));
 }
 
