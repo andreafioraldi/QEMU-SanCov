@@ -102,6 +102,7 @@ patch -p1 <../patches/elfload.diff || exit 1
 patch -p1 <../patches/cpu-exec.diff || exit 1
 patch -p1 <../patches/translate-all.diff || exit 1
 patch -p1 <../patches/tcg.diff || exit 1
+patch -p1 <../patches/i386-translate.diff || exit 1
 
 echo "[+] Patching done."
 
