@@ -1,5 +1,5 @@
 diff --git a/linux-user/elfload.c b/linux-user/elfload.c
-index 5bccd2e2..933c7b97 100644
+index 5bccd2e2..8bee1371 100644
 --- a/linux-user/elfload.c
 +++ b/linux-user/elfload.c
 @@ -8,6 +8,12 @@
@@ -34,7 +34,19 @@ index 5bccd2e2..933c7b97 100644
  
      for (i = 0; i < ehdr->e_phnum; i++) {
          struct elf_phdr *eppnt = phdr + i;
-@@ -2662,6 +2680,22 @@ int load_elf_binary(struct linux_binprm *bprm, struct image_info *info)
+@@ -2335,9 +2353,11 @@ static void load_elf_image(const char *image_name, int image_fd,
+             if (elf_prot & PROT_EXEC) {
+                 if (vaddr < info->start_code) {
+                     info->start_code = vaddr;
++                    if (!sancov_code_start) sancov_code_start = vaddr;
+                 }
+                 if (vaddr_ef > info->end_code) {
+                     info->end_code = vaddr_ef;
++                    if (!sancov_code_end) sancov_code_end = vaddr_ef;
+                 }
+             }
+             if (elf_prot & PROT_WRITE) {
+@@ -2662,6 +2682,22 @@ int load_elf_binary(struct linux_binprm *bprm, struct image_info *info)
         change some of these later */
      bprm->p = setup_arg_pages(bprm, info);
  
